@@ -1,5 +1,5 @@
 # sg-RSI-forecast
-Using various benchmark time series forecasting methods in R to forecast Singapore's Retail Sales Index
+Using various time series forecasting methods in R to forecast Singapore's Retail Sales Index
 
 This project was done for the requirements of the module HE3022 Econometric Modeling and Forecasting, along with my group members Heena Agarwal, Gopal Agarwal, and Manasi Murali.
 
