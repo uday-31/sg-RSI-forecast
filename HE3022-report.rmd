@@ -1,12 +1,7 @@
 ---
 title: 'HE3022 Report'
 subtitle: 'Agarwal Gopal, Agarwal Heena, Manasi Murali, Sharma Uday'
-output:
-  pdf_document: default
-  html_notebook: default
-  html_document:
-    df_print: paged
-    toc: true
+output: rmarkdown::github_document
 ---
 \tableofcontents
 <!-- \listoffigures -->
@@ -78,7 +73,7 @@ These include the following industries [(Ministry of Trade & Industry [MTI], 202
 ## Recent Industry Trends
 
 ```{r intro, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("RSI2020.jpg")
+knitr::include_graphics("data/RSI2020.jpg")
 ```
 
 *Figure 1*. Trend of RSI in 2020 [(MTI, 2021)](#five){#fiveR}.
@@ -86,7 +81,7 @@ knitr::include_graphics("RSI2020.jpg")
 The Retail Trade sector of Singapore contracted by 4.7 per cent year-on-year in the fourth quarter of 2020, which was an improvement from the 8.6% decline in the previous quarter. For the whole of 2020, the sector shrank by 16%, an extremely poor performance as compared to the 2.4% contraction in 2019, marked by a sharp decline in the second quarter, which coincided with the Circuit Breaker. The primary reason to which this shrink can be attributed to is the outbreak of the global COVID-19 pandemic, which resulted in stricter health measures, including the Circuit Breaker and other border control measures. 
 
 ```{r, echo=FALSE, out.width = '50%'}
-knitr::include_graphics("sectorwiseRSI.jpg")
+knitr::include_graphics("data/sectorwiseRSI.jpg")
 ```
 
 *Figure 2*. Sector-wise trends in RSI in Singapore for 2020 [(MTI, 2021)](#five){#fiveR}.
@@ -96,7 +91,7 @@ In terms of motor vehicle sales, the drop was in line with the reduction in COE 
 However, in terms of non-motor vehicle sales, there was a large decline caused by slowed demand and public health measures. Although there was an increase in sales for Supermarkets & Hypermarkets (+30.1%) due to increased demand caused by the pandemic and lockdown, most of the other sectors took a hit, especially luxury items like watches & jewellery. This was amplified by the fact that Singapore had closed borders to tourists, who used to contribute a lot to the retail sales.
 
 ```{r, echo=FALSE, out.width = '100%'}
-knitr::include_graphics("trends2019.jpg")
+knitr::include_graphics("data/trends2019.jpg")
 ```
 
 *Figure 3*. Trends for RSI in 2019, overall and sector-wise [(MTI, 2020)](#six){#sixR}.
@@ -118,7 +113,7 @@ Studying the trends for 2019 shows that the RSI was already declining before the
 The Excel file is loaded, and the data are converted to a timeseries object of monthly frequency, from January 1985 to January 2021.
 
 ```{r, echo=FALSE}
-RSI <- readxl::read_excel("RSI.xlsx")
+RSI <- readxl::read_excel("data/RSI.xlsx")
 RSI <- ts(RSI[,2],start = c(1985,1), end = c(2021,1), frequency = 12)
 ```
 
@@ -597,7 +592,7 @@ We perform linear regression, with the RSI as the dependent variable. The predic
 * Per Capita Gross National Income [(Per Capita GNI, 2019)](#twelve){#twelveR}. This has a direct impact on the purchasing power of the consumers, and hence may affect the RSI. The dataset has yearly frequency, and we use cubic spline interpolation to convert it to monthly frequency. The time series is available from 1985 to 2018.
 
 ```{r regmodels, echo=FALSE}
-GNI <- readxl::read_excel("regGNI.xlsx")
+GNI <- readxl::read_excel("data/regGNI.xlsx")
 GNI <- ts(GNI[,2],start = 1985, end = 2018, frequency = 1)
 x = c(1985:2018)
 GNI <- splinefun(x=x, y=GNI, method="fmm",  ties = mean)
@@ -608,7 +603,7 @@ GNI <- ts(GNI,start = c(1985,1), end = c(2018,1), frequency = 12)
 * Number of Residents [(Singapore Residents, 2020)](#thirteen){#thirteenR}. As we are considering the *per capita* GNI, we should also consider the number of residents in Singapore. The dataset has an annual frequency and consists of the number of Singapore residents decomposed by age group, ethnic group, and sex. We first use Pivot tables on Excel to aggregate the data for each year across age group, ethnic group and sex, and then use cubic spline interpolation to convert it to monthly frequency. The time series is available from 1985 to 2019.
 
 ```{r, echo=FALSE}
-Pop <- readxl::read_excel("regResidents.xlsx")
+Pop <- readxl::read_excel("data/regResidents.xlsx")
 Pop <- ts(Pop[,2],start = 1985, end = 2019, frequency = 1)
 x = c(1985:2019)
 Pop <- splinefun(x=x, y=Pop, method="fmm",  ties = mean)
@@ -619,7 +614,7 @@ Pop <- ts(Pop,start = c(1985,1), end = c(2019,1), frequency = 12)
 * Average CPF Contribution Rates [(CPF Contribution Rates, 2017)](#fourteen){#fourteenR}. The CPF contribution rates directly affect the take-home income the residents have, given the same salary/wage. The dataset has CPF contribution rates for the different "effective from" dates, decomposed by age group and contributing party (employee/employer). We first use Pivot tables on Excel to aggregate the data for each "effective from" date by taking the average contribution rate across age groups and contributing party. Then, we transform the data into a time series with an annual frequency. Finally, we use cubic spline interpolation to convert it to monthly frequency. The time series is available from 1985 to 2021.
 
 ```{r, echo=FALSE}
-CPF <- readxl::read_excel("regCPF.xlsx")
+CPF <- readxl::read_excel("data/regCPF.xlsx")
 CPF <- ts(CPF[,2],start = 1985, end = 2021, frequency = 1)
 x = c(1985:2021)
 CPF <- splinefun(x=x, y=CPF, method="fmm",  ties = mean)
@@ -630,7 +625,7 @@ CPF <- ts(CPF,start = c(1985,1), end = c(2021,1), frequency = 12)
 * Total Certificate of Entitlement (COE) Quota [(COE Trends, 2021)](#fifteen){#fifteenR}. The RSI also includes Motor Vehicle Sales, which is directly affected by the CPF quota for that period. The dataset we use has monthly data on COE quota decomposed by bid number (there are two bids each month) and category of vehicle (A,B,C,D or E). For the sake of simplicity, we use Pivot tables on Excel to aggregate the monthly data by the total number of quotas across both bids and all vehicle classes. Some additional formatting of the date string had to be done using Excel functions to allow it to be sorted in ascending order of date and be passed to R. As the current system of two open bidding exercises per month was introduced in 2002, our dataset is from April 2002 to March 2021.
 
 ```{r, echo=FALSE}
-COE <- readxl::read_excel("regCOE.xlsx")
+COE <- readxl::read_excel("data/regCOE.xlsx")
 COE <- ts(COE[,2],start = c(2002,4), end = c(2021,4), frequency = 12)
 ```
 
