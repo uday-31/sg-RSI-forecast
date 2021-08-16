@@ -1,7 +1,12 @@
 ---
 title: 'HE3022 Report'
 subtitle: 'Agarwal Gopal, Agarwal Heena, Manasi Murali, Sharma Uday'
-output: rmarkdown::github_document
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+    toc: true
 ---
 \tableofcontents
 <!-- \listoffigures -->
